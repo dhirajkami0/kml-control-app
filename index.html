@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b1a0b">
+
+  <title>Command Centre</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0b1a0b;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    button {
+      background: #2e7d32;
+      border: none;
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: white;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>🌿 Command Centre</h2>
+
+  <!-- BEAT SELECT -->
+  <select id="beat">
+    <option value="">Select Beat</option>
+    <option>EAST GARAM</option>
+    <option>WEST GARAM</option>
+    <option>EAST PORO</option>
+    <option>RANGE HQ</option>
+  </select>
+
+  <!-- FILE -->
+  <input type="file" id="file" accept=".kml">
+
+  <!-- BUTTON -->
+  <button onclick="uploadKML()">UPLOAD KML</button>
+
+  <div id="status"></div>
+
+</div>
+
+<script>
+
+function uploadKML() {
+
+  const beat = document.getElementById("beat").value;
+  const fileInput = document.getElementById("file");
+  const file = fileInput.files[0];
+  const status = document.getElementById("status");
+
+  if (!beat) {
+    alert("Select Beat");
+    return;
+  }
+
+  if (!file) {
+    alert("Select KML file");
+    return;
+  }
+
+  status.innerHTML = "⏳ Uploading...";
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+
+    const kmlText = e.target.result;
+
+    fetch("https://script.google.com/macros/s/AKfycbzBipROiRtMq-KoJaCf_Zi-d8PQEstYRsgAZ6VYFJRieHI9z7bTKYP4RtCUNRvJkwO7/exec", {
+      method: "POST",
+      body: JSON.stringify({
+        beatTag: beat,
+        kmlText: kmlText
+      })
+    })
+    .then(res => res.text())
+    .then(msg => {
+      status.innerHTML = "✅ " + msg;
+    })
+    .catch(err => {
+      status.innerHTML = "❌ Upload failed";
+      console.error(err);
+    });
+
+  };
+
+  reader.readAsText(file);
+}
+
+</script>
+
+</body>
+</html>

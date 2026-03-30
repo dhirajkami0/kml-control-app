@@ -1,0 +1,22 @@
+{
+  "name": "West Damanpur Command Centre",
+  "short_name": "Command",
+  "start_url": "https://script.google.com/macros/s/AKfycbzBipROiRtMq-KoJaCf_Zi-d8PQEstYRsgAZ6VYFJRieHI9z7bTKYP4RtCUNRvJkwO7/exec",
+  "display": "standalone",
+  "background_color": "#0b1a0b",
+  "theme_color": "#0b1a0b",
+  "orientation": "portrait",
+  "scope": "https://script.google.com/",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/forest.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/forest.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

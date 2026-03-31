@@ -558,6 +558,7 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error("❌ SW error", err));
   });
 }
+
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzBipROiRtMq-KoJaCf_Zi-d8PQEstYRsgAZ6VYFJRieHI9z7bTKYP4RtCUNRvJkwO7/exec";
 
 function callBackend(action, payload = {}) {
@@ -2004,14 +2005,12 @@ window.addEventListener("load", function () {
 
   console.log("🚀 App Started - Command Centre Initializing");
 
-  /* 1. INITIALIZE UI IMMEDIATELY */
   try {
     initResponsiveUI(); 
   } catch(e) {
     console.warn("UI Init delayed: ", e);
   }
 
-  /* 2. AUTHENTICATION + ROLE CONTROL */
   callBackend("getAuthProfile")
   .then(function(profile){
 
@@ -2024,58 +2023,51 @@ window.addEventListener("load", function () {
     window.userProfile = profile;
     window.userEmail = profile.email;
 
-    /* 🔥 ROLE BASED UI */
     if(profile.role === "ADMIN" || profile.role === "LEADER"){
       document.querySelectorAll('.leader-only').forEach(el=>{
         el.style.setProperty('display','block','important');
       });
     }
 
-    /* 3. INITIALIZE DUTY & KML */
     initDutyControl();
     loadRangeKML();
     loadCompartmentsFromSheet();
 
-    /* 4. CRITICAL DATA CHAIN */
-    callBackend("updateVillageRisk")
-    .then(function(coneData){
+    return callBackend("updateVillageRisk");   // ✅ RETURN added
 
-      window.coneVillages = coneData || {};
+  })
+  .then(function(coneData){
 
-      callBackend("getVillages")
-      .then(function(villageList){
+    window.coneVillages = coneData || {};
 
-        window.villages = (villageList || []).map(v => ({
-          name: v.name || v.Village || "Unknown",
-          lat: parseFloat(v.lat),
-          lon: parseFloat(v.lon)
-        }));
+    return callBackend("getVillages");   // ✅ RETURN added
 
-        // 🔥 MASTER REFRESH
-        refreshAll();
+  })
+  .then(function(villageList){
 
-        /* 5. UI FINALIZATION */
-        const splash = document.getElementById('splash-screen');
-        if(splash){
-          splash.style.opacity = "0";
-          setTimeout(()=> splash.style.display = "none", 800);
-        }
+    window.villages = (villageList || []).map(v => ({
+      name: v.name || v.Village || "Unknown",
+      lat: parseFloat(v.lat),
+      lon: parseFloat(v.lon)
+    }));
 
-        /* 6. BACKGROUND LOOPS */
-        setInterval(function(){
-          if(window.userProfile && window.userProfile.leader){
-            autoShowEndDuty();
-          }
-        }, 10000);
+    refreshAll();
 
-        // 🔥 INIT FORM LISTENERS (SAFE)
-        if(typeof initEventListeners === "function"){
-          initEventListeners();
-        }
+    const splash = document.getElementById('splash-screen');
+    if(splash){
+      splash.style.opacity = "0";
+      setTimeout(()=> splash.style.display = "none", 800);
+    }
 
-      });
+    setInterval(function(){
+      if(window.userProfile && window.userProfile.leader){
+        autoShowEndDuty();
+      }
+    }, 10000);
 
-    });
+    if(typeof initEventListeners === "function"){
+      initEventListeners();
+    }
 
   })
   .catch(function(err){

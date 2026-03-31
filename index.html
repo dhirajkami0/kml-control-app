@@ -552,13 +552,6 @@ canvas.leaflet-zoom-animated {
 
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log("✅ SW registered"))
-      .catch(err => console.error("❌ SW error", err));
-  });
-}
 
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzBipROiRtMq-KoJaCf_Zi-d8PQEstYRsgAZ6VYFJRieHI9z7bTKYP4RtCUNRvJkwO7/exec";
 

@@ -2256,15 +2256,9 @@ setInterval(function(){
 // keep detached
 function loadRiverNetwork(){
 
-  // 🔥 Prevent duplicate heavy load
   if(riverLayer.getLayers().length > 0){
-    console.log("⚠ River already loaded");
     return;
   }
-
-  console.log("🌊 Loading River Network...");
-
-  document.getElementById('last-update').innerHTML = "🌊 Loading Rivers...";
 
   callBackend("getRiverGeoJSON")
   .then(function(jsonString){
@@ -2278,25 +2272,19 @@ function loadRiverNetwork(){
           weight: 3,
           opacity: 0.8
         },
-        renderer: L.canvas() // 🔥 performance
-      }).addTo(riverLayer);
-
-      console.log("✅ Rivers Loaded");
-
-      document.getElementById('last-update').innerHTML = "🟢 Rivers Ready";
+        renderer: L.canvas()
+      }).addTo(riverLayer);   // ✅ FIXED
 
     } catch(err){
-      console.error("❌ River parse error:", err);
+      console.error(err);
     }
 
   })
   .catch(function(err){
-    console.error("❌ River load error:", err);
+    console.error(err);
   });
 
 }
-
-
 /* ============================================================
    🎛 LAYER CONTROL (CLEAN + ORDERED)
 ============================================================ */

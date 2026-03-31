@@ -1,4 +1,4 @@
-const CACHE_NAME = "command-centre-v1";
+const CACHE_NAME = "command-centre-v2";
 
 const urlsToCache = [
   "./",

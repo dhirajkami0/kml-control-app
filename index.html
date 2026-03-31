@@ -3308,18 +3308,17 @@ function autoShowEndDuty(){
 
 }/* 🔥 FIXED START DUTY: CAPTURES DATA AND UPDATES BUTTON */
 /* 🔥 FIXED START DUTY: CAPTURES DATA, SUBMITS, AND UPDATES BUTTON */
+<script>
+
 function startDuty() {
   const now = new Date();
   
-  // 1. Get Values from Multi-select checkboxes
   const staffArray = getCheckedValues("staffOptions");
   const comptArray = getCheckedValues("comptOptions");
 
-  // 2. Convert arrays to a single string for the Spreadsheet
   const staffString = staffArray.join(", ");
   const comptString = comptArray.join(", ");
 
-  /* 🔒 VALIDATION: Prevent empty submissions */
   if (staffArray.length === 0) {
     alert("❌ Error: Select at least one staff member.");
     return;
@@ -3329,7 +3328,6 @@ function startDuty() {
     return;
   }
 
-  /* 🚀 BUILD PAYLOAD: This matches your Spreadsheet columns */
   const payload = {
     id: document.getElementById("d-id").value,
     leader: document.getElementById("d-leader").value,
@@ -3344,47 +3342,39 @@ function startDuty() {
     })
   };
 
-  // UI Feedback: Change button text so user knows it's working
   const startBtn = document.querySelector("#duty-modal button[onclick='startDuty()']");
   const originalText = startBtn.innerHTML;
   startBtn.innerHTML = "⏳ SAVING TO CENTRE...";
   startBtn.disabled = true;
 
-  /* 🛰️ THE BACKEND CALL */
-callBackend("saveDutyFull", {
-  payload: payload
-})
-.then(function() {
-  // ✅ SUCCESS HANDLER
-  alert("✅ Duty Successfully Logged!");
-  
-  closeDutyForm(); // Close popup
-  
-  // Update Global State immediately
-  window.isDutyActive = true;
-  
-  // Transform button UI
-  autoShowEndDuty(); 
+  callBackend("saveDutyFull", {
+    payload: payload
+  })
+  .then(function() {
 
-  // Reset button state
-  startBtn.innerHTML = originalText;
-  startBtn.disabled = false;
-  
-  // Refresh map
-  refreshAll();
-})
-.catch(function(err) {
-  // ❌ ERROR HANDLER
-  alert("❌ Critical Error: " + (err.message || err));
-  startBtn.innerHTML = originalText;
-  startBtn.disabled = false;
-});
+    alert("✅ Duty Successfully Logged!");
+    closeDutyForm();
+
+    window.isDutyActive = true;
+    autoShowEndDuty();
+
+    startBtn.innerHTML = originalText;
+    startBtn.disabled = false;
+
+    refreshAll();
+  })
+  .catch(function(err) {
+    alert("❌ Critical Error: " + (err.message || err));
+    startBtn.innerHTML = originalText;
+    startBtn.disabled = false;
+  });
+
+} // ✅🔥 THIS WAS MISSING
 
 
-/* AFTER START DUTY */
-
-
-/* END DUTY */
+/* =========================
+   END DUTY
+========================= */
 function submitEndDuty(event){
 
   if (!confirm("Submit report and end duty?")) return;
@@ -3410,8 +3400,7 @@ function submitEndDuty(event){
 
 }
 
-</script>
-    </div>
+</script>    </div>
 
   </div>
 </div>

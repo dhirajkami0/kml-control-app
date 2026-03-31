@@ -1070,8 +1070,11 @@ function openStatsPopup(name, latlng) {
     .setContent('⏳ Loading ' + name + '...')
     .openOn(map);
 
+  // ✅ USE THIS (GitHub → callBackend)
+  // 👉 OR replace with google.script.run if running inside Apps Script
+
   callBackend("getCompartmentStats", { name })
-    .then(function (data) {
+    .then(function(data){
 
       if (!data) {
         popup.setContent("<b>❌ No data found</b>");
@@ -1088,8 +1091,8 @@ function openStatsPopup(name, latlng) {
 
       // 🎨 Health color
       let healthColor = "#d32f2f";
-      if (data.health >= 70) healthColor = "#2e7d32";
-      else if (data.health >= 40) healthColor = "#f9a825";
+      if (Number(data.health) >= 70) healthColor = "#2e7d32";
+      else if (Number(data.health) >= 40) healthColor = "#f9a825";
 
       var content = `
 <div style="font-family:Segoe UI; min-width:260px; line-height:1.6; color:#222;">
@@ -1130,13 +1133,11 @@ ${pct(data.health)} / 100
       popup.setContent(content);
 
     })
-    .catch(function (err) {
+    .catch(function(err){
       console.error(err);
       popup.setContent("❌ Error loading data");
     });
-}
-
-/* ============================================================
+}/* ============================================================
    📊 BLOCK 6 → COMPARTMENTS + GRID + SUMMARY
 ============================================================ */
 
